@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Access Shadow DOM</title>
+</head>
+<body>
+    <custom-button></custom-button>
+
+    <script>
+        // Create a custom button component with Shadow DOM
+        class CustomButton extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' }); // Open Shadow DOM
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        button { background: blue; color: white; padding: 10px; }
+                    </style>
+                    <button id="myButton">Click Me</button>
+                `;
+            }
+        }
+        customElements.define('custom-button', CustomButton);
+
+        // Wait for the component to be added to the DOM
+        window.onload = () => {
+            const customButton = document.querySelector('custom-button');
+            const shadowButton = customButton.shadowRoot.querySelector('#myButton');
+            shadowButton.addEventListener('click', () => alert('Shadow DOM Button Clicked!'));
+        };
+    </script>
+    <style>
+                        button { background: red; color: white; padding: 10px; }
+
+    </style>
+</body>
+</html>
