@@ -13,4 +13,10 @@ const students = [
  );
  
  console.log(result);
+
+
+//  OUTPUT QUESTION
+ const sampleFunc = options=>console.log({...options})
+
+sampleFunc("httpssdvfsdv","wer");
  
