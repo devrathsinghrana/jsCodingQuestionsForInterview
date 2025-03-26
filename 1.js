@@ -19,4 +19,11 @@ const students = [
  const sampleFunc = options=>console.log({...options})
 
 sampleFunc("httpssdvfsdv","wer");
+
+/*
+coding question
+
+input  - 2, 10(take any two numbers from user)
+output - make tables from 2 to 10.
+*/
  
