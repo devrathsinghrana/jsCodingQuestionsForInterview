@@ -40,3 +40,12 @@ coding question
 input  - 2, 10(take any two numbers from user)
 output - make tables from 2 to 10.
 */
+
+const a = 2,
+  b = 4;
+
+for (let i = a; i <= b; i++) {
+  for (let j = 1; j <= 10; j++) {
+    console.log(`${i} * ${j} = ${i * j}`);
+  }
+}
