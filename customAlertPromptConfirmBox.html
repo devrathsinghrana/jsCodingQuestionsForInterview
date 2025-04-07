@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    #dialogOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    #dialogBox {
+      display: inline-block;
+      margin-top: 20%;
+      background: #fff;
+      padding: 20px;
+      border-radius: 4px;
+      min-width: 250px;
+    }
+
+    #dialogBox input {
+      width: 90%;
+      padding: 5px;
+      margin-top: 10px;
+    }
+
+    #dialogBox button {
+      margin: 10px 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Dialog Container -->
+<div id="dialogOverlay" tabindex="-1">
+  <div id="dialogBox" role="dialog" aria-labelledby="dialogMessage">
+    <p id="dialogMessage"></p>
+    <input type="text" id="dialogInput" style="display:none;" />
+    <div id="dialogButtons">
+      <button id="dialogOkBtn">OK</button>
+      <button id="dialogCancelBtn" style="display:none;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var dialogOverlay = document.getElementById('dialogOverlay');
+    var dialogMessage = document.getElementById('dialogMessage');
+    var dialogInput = document.getElementById('dialogInput');
+    var okBtn = document.getElementById('dialogOkBtn');
+    var cancelBtn = document.getElementById('dialogCancelBtn');
+    var currentType = '';
+    var callback = null;
+
+    function showDialog(type, message, cb) {
+      currentType = type;
+      callback = cb;
+      dialogMessage.innerText = message;
+      dialogInput.style.display = type === 'prompt' ? 'block' : 'none';
+      cancelBtn.style.display = type === 'confirm' || type === 'prompt' ? 'inline-block' : 'none';
+      dialogOverlay.style.display = 'block';
+
+      if (type === 'prompt') {
+        dialogInput.value = '';
+        dialogInput.focus();
+      } else {
+        okBtn.focus();
+      }
+
+      document.addEventListener('keydown', keyHandler);
+    }
+
+    function closeDialog(result) {
+      dialogOverlay.style.display = 'none';
+      document.removeEventListener('keydown', keyHandler);
+
+      if (typeof callback === 'function') {
+        if (currentType === 'prompt' && result === true) {
+          callback(dialogInput.value);
+        } else if (currentType === 'alert' && result === false) {
+          callback(null);
+        } else if (currentType === 'confirm') {
+          callback(result);
+        } else {
+          callback(); // alert()
+        }
+      }
+    }
+
+    function keyHandler(e) {
+      e = e || window.event;
+      if (e.keyCode === 13) { // ENTER
+        closeDialog(true);
+      } else if (e.keyCode === 27) { // ESC
+        closeDialog(false);
+      }
+    }
+
+    okBtn.onclick = function () { closeDialog(true); };
+    cancelBtn.onclick = function () { closeDialog(false); };
+
+    window.CustomDialog = {
+      alert: function (message, cb) {
+        showDialog('alert', message, cb || function () {});
+      },
+      confirm: function (message, cb) {
+        showDialog('confirm', message, cb);
+      },
+      prompt: function (message, cb) {
+        showDialog('prompt', message, cb);
+      }
+    };
+  })();
+
+  // ALERT
+CustomDialog.alert("This is a legacy-safe alert!", function () {
+  console.log("Alert closed");
+});
+
+// CONFIRM
+CustomDialog.confirm("Are you sure?", function (result) {
+  if (result) {
+    console.log("User confirmed");
+  } else {
+    console.log("User cancelled");
+  }
+});
+
+// PROMPT
+CustomDialog.prompt("What's your name?", function (value) {
+  if (value !== null) {
+    console.log("User input:", value);
+  } else {
+    console.log("User cancelled");
+  }
+});
+
+alert("hey")
+prompt("yoo")
+confirm("are you sure?")
+
+</script>
+
+</body>
+</html>
